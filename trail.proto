@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+service Trail {
+	rpc RunTrail (Data) returns (ReplyMessage);
+}
+
+message Data {
+    string data = 1;
+	int32 trail_id = 2;
+}
+
+message ReplyMessage {
+	string message = 1;
+}
