@@ -9,8 +9,8 @@ import sys
 
 import os
 
-import trail_pb2
-import trail_pb2_grpc
+from adviserclient import trail_pb2
+from adviserclient import trail_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 conf = None
@@ -26,6 +26,7 @@ def load_conf(file_path):
         print('Not found %s, or configuration file not in JSON format' % file_path)
         sys.exit(1)
     conf_abs_path = os.path.dirname(file_path)
+    print('conf', conf_abs_path)
 
 
 class TrailServicer(trail_pb2_grpc.TrailServicer):
@@ -53,7 +54,7 @@ def usage():
     print('-c:  Specify configuration file path')
 
 
-if __name__ == "__main__":
+def execute():
     argv = sys.argv
 
     opts, args = getopt.getopt(argv[1:], 'c:eh')
@@ -68,8 +69,9 @@ if __name__ == "__main__":
             sys.exit(0)
         if o in ['-c']:
             load_conf(v)
-        else:
-            usage()
-            sys.exit(1)
-
+            print('conf', conf_abs_path)
     serve()
+
+
+if __name__ == "__main__":
+    execute()
