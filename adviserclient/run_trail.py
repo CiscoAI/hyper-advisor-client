@@ -2,6 +2,7 @@ import sys
 
 import subprocess
 
+import os
 import requests
 import json
 
@@ -9,6 +10,7 @@ conf = None
 
 
 def load_conf(file_path):
+    global conf
     try:
         with open(file_path) as f:
             conf = json.loads(f.read())
@@ -39,12 +41,14 @@ def run():
     trail = argv[3]
 
     load_conf(conf_path)
+    print(conf)
 
     # call the objective function and get the output
     cmd = generate_command(trail)
 
     parameter_list = [conf['model']["python-version"], conf['model']["entry"]] + cmd
     # parameter_list = parameter_list + values
+    os.chdir(conf['model']['project-root'])
     proc = subprocess.Popen(parameter_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     output = str(proc.communicate()[0])
 
@@ -56,9 +60,9 @@ def run():
 
     # print(metric)
 
-    api_server = conf['api-server']
+    response_url = conf['response_url']
     r = requests.post(
-        url='%s://%s:%s%s' % (api_server['protocol'], api_server['ip'], api_server['port'], api_server['url']),
+        url=response_url,
         json={
             "trail_id": trail_id,
             "metric": metric
