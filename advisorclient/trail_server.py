@@ -9,8 +9,8 @@ import sys
 
 import os
 
-from adviserclient import trail_pb2
-from adviserclient import trail_pb2_grpc
+from advisorclient import trail_pb2
+from advisorclient import trail_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 conf = None
@@ -86,12 +86,12 @@ def json_guider(o_path):
         'trail-server': {},
     }
     print('Welcome to configuration guider!')
-    _conf['response_url'] = input('Input response url of api server: ')
-    _conf['model']['python-version'] = input('Input python version model needed (default python3): ') or 'python3'
-    _conf['model']['project-root'] = input('Input project root path : ')
-    _conf['model']['entry'] = input('Input entry of model (executive python script, based on project path): ')
-    _conf['trail-server']['host'] = input('Input trail server host (default 0.0.0.0):') or '0.0.0.0'
-    _conf['trail-server']['port'] = input('Input trail server port (default 50052): ') or '50052'
+    _conf['response_url'] = input('Response url of api server: ')
+    _conf['model']['python-version'] = input('Python version needed for the model (default python3): ') or 'python3'
+    _conf['model']['project-root'] = input('Project root path : ')
+    _conf['model']['entry'] = input('Entry point of model (executive python script, based on project path): ')
+    _conf['trail-server']['host'] = input('Trail server host (default 0.0.0.0):') or '0.0.0.0'
+    _conf['trail-server']['port'] = input('Trail server port (default 50052): ') or '50052'
     conf_str = json.dumps(_conf)
     with open(o_path, "w") as f:
         f.write(conf_str)
