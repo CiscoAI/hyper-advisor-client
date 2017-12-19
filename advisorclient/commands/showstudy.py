@@ -5,7 +5,7 @@ import sys
 
 import requests
 
-from commands.AdvisorCommand import AdvisorCommand
+from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 conf = None
 

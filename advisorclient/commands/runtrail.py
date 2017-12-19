@@ -7,8 +7,8 @@ import subprocess
 import requests
 import time
 
-import run_trail
-from commands.AdvisorCommand import AdvisorCommand
+from advisorclient import run_trail
+from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 conf = None
 

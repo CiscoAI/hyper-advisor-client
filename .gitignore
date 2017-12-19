@@ -3,6 +3,7 @@ advisorclient/.idea/
 advisorclient/unused/
 advisorclient/model.conf.json
 advisorclient/test.json
+test.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -2,7 +2,7 @@ import json
 import os
 import platform
 
-from commands.AdvisorCommand import AdvisorCommand
+from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 
 class Command(AdvisorCommand):

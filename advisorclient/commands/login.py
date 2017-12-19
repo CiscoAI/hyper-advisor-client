@@ -3,7 +3,7 @@ import os
 
 import sys
 
-from commands.AdvisorCommand import AdvisorCommand
+from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 import requests
 
@@ -28,13 +28,13 @@ class Command(AdvisorCommand):
                 "password": self.password
             }
         )
-        print("logged in successfully")
 
         if r.json()["code"] != 0:
             print(r.json()["msg"])
             sys.exit(1)
-        self._save_token(r.json()["body"]["sessionid"])
 
+        print("logged in successfully")
+        self._save_token(r.json()["body"]["sessionid"])
         print("api token saved")
 
     def show_desc(self):

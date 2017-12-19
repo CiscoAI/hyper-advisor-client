@@ -6,7 +6,7 @@ from pkgutil import iter_modules
 
 import sys
 
-from commands.AdvisorCommand import AdvisorCommand
+from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 
 # find all the modules recursively under a path
@@ -55,9 +55,9 @@ def print_usage():
     print("Usage:")
     print("advisor-client <command> [options] [args]")
     print("Available commands:")
-    cmds = get_commands_from_module('commands')
+    cmds = get_commands_from_module('advisorclient.commands')
     for cmdname, cmdclass in sorted(cmds.items()):
-        print("%-10s %s" % (cmdname, cmdclass.show_desc()))
+        print("%-20s %s" % (cmdname, cmdclass.show_desc()))
     print()
     print("Use 'advisor-client <command> -h' to see more info about a command")
 
@@ -71,7 +71,7 @@ def execute(argv=None):
     if argv is None:
         argv = sys.argv
 
-    cmds = get_commands_from_module('commands')
+    cmds = get_commands_from_module('advisorclient.commands')
     cmdname = get_command_from_argument(argv)
     if not cmdname:
         print_usage()
