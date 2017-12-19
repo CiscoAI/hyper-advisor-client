@@ -8,8 +8,8 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 def data_preprocess():
-    train_data = pd.read_csv("RF_model/train.csv")
-    test_data = pd.read_csv("RF_model/test.csv")
+    train_data = pd.read_csv("train.csv")
+    test_data = pd.read_csv("test.csv")
 
     train_data.insert(loc=0, column="CabinNull", value=np.array(train_data.isnull()["Cabin"], dtype=int))
     train_data.insert(loc=0, column="AgeNull", value=np.array(train_data.isnull()["Age"], dtype=int))

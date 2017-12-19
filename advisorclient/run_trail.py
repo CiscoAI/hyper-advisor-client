@@ -34,14 +34,8 @@ def parse_metric(metric):
     })
 
 
-def run():
-    argv = sys.argv
-    conf_path = argv[1]
-    trail_id = argv[2]
-    trail = argv[3]
-
+def run(conf_path, trail_id, trail):
     load_conf(conf_path)
-    print(conf)
 
     # call the objective function and get the output
     cmd = generate_command(trail)
@@ -58,17 +52,19 @@ def run():
     metric = float(output[start:end])
     metric = parse_metric(metric)
 
+    return trail_id, metric
+
     # print(metric)
 
-    response_url = conf['response_url']
-    r = requests.post(
-        url=response_url,
-        json={
-            "trail_id": trail_id,
-            "metric": metric
-        }
-    )
+    # response_url = conf['response_url']
+    # r = requests.post(
+    #     url=response_url,
+    #     json={
+    #         "trail_id": trail_id,
+    #         "metric": metric
+    #     }
+    # )
     # print(r.text)
-
-if __name__ == "__main__":
-    run()
+#
+# if __name__ == "__main__":
+#     run()
