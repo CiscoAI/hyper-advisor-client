@@ -22,9 +22,9 @@ class Command(AdvisorCommand):
         cookies = {"sessionid": token}
         self._load_config()
         r = requests.get(
-            url="http://{}:{}/api/study/trail?study_id={}".format(conf["api_server"]["ip"],
-                                                                  conf["api_server"]["port"],
-                                                                  self.study_id),
+            url="http://{}:{}/api/study/{}/trail".format(conf["api_server"]["ip"],
+                                                         conf["api_server"]["port"],
+                                                         self.study_id),
             cookies=cookies,
         )
         try:

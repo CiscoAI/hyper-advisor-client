@@ -29,9 +29,9 @@ class Command(AdvisorCommand):
         for i in range(self.iteration_num):
             while True:
                 r = requests.get(
-                    url="http://{}:{}/api/study/trail?study_id={}".format(conf["api_server"]["ip"],
-                                                                          conf["api_server"]["port"],
-                                                                          self.study_id),
+                    url="http://{}:{}/api/study/{}/trail".format(conf["api_server"]["ip"],
+                                                                 conf["api_server"]["port"],
+                                                                 self.study_id),
                     cookies=cookies,
                 )
                 try:
@@ -59,12 +59,12 @@ class Command(AdvisorCommand):
                     trail=str(r.json()["body"]["trail_list"][j]["trail"]),
                 )
 
-                r = requests.post(
-                    url="http://{}:{}/api/study/trail/response".format(conf["api_server"]["ip"],
-                                                                       conf["api_server"]["port"]),
+                r = requests.put(
+                    url="http://{}:{}/api/trail/{}".format(conf["api_server"]["ip"],
+                                                           conf["api_server"]["port"],
+                                                           trail_id),
 
                     json={
-                        "trail_id": trail_id,
                         "metric": metric
                     },
                     cookies=cookies

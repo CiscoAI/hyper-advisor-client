@@ -9,6 +9,7 @@ from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 conf = None
 
+
 class Command(AdvisorCommand):
     def __init__(self):
         super().__init__()
@@ -23,12 +24,12 @@ class Command(AdvisorCommand):
 
         cookies = {"sessionid": token}
         metric = self._parse_metric()
-        r = requests.post(
-            url="http://{}:{}/api/study/trail/response".format(conf["api_server"]["ip"],
-                                                               conf["api_server"]["port"]),
+        r = requests.put(
+            url="http://{}:{}/api/trail/{}".format(conf["api_server"]["ip"],
+                                                   conf["api_server"]["port"],
+                                                   self.trail_id),
 
             json={
-                "trail_id": self.trail_id,
                 "metric": metric
             },
             cookies=cookies
