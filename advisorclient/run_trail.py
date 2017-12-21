@@ -6,14 +6,14 @@ import os
 import requests
 import json
 
-conf = None
+CONF = None
 
 
 def load_conf(file_path):
-    global conf
+    global CONF
     try:
         with open(file_path) as f:
-            conf = json.loads(f.read())
+            CONF = json.loads(f.read())
     except Exception as e:
         print(str(e))
         print('Not found %s, or configuration file not in JSON format' % file_path)
@@ -40,10 +40,14 @@ def run(conf_path, trail_id, trail):
     # call the objective function and get the output
     cmd = generate_command(trail)
 
-    parameter_list = [conf['model']["python-version"], conf['model']["entry"]] + cmd
+    parameter_list = [CONF['model']["python-version"], CONF['model']["entry"]] + cmd
     # parameter_list = parameter_list + values
-    os.chdir(conf['model']['project-root'])
-    proc = subprocess.Popen(parameter_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    os.chdir(CONF['model']['project-root'])
+    proc = subprocess.Popen(
+        parameter_list,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
     output = str(proc.communicate()[0])
 
     # format the output

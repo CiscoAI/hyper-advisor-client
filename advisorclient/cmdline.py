@@ -30,9 +30,10 @@ def iter_command_classes(module_name):
     mods = walk_modules(module_name)
     for mod in mods:
         for obj in vars(mod).values():
-            if inspect.isclass(obj) and \
-                    issubclass(obj, AdvisorCommand) and obj.__module__ == mod.__name__ and \
-                    not obj == AdvisorCommand:
+            if inspect.isclass(obj) \
+                    and issubclass(obj, AdvisorCommand) \
+                    and obj.__module__ == mod.__name__ \
+                    and not obj == AdvisorCommand:
                 yield obj
 
 

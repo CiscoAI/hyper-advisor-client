@@ -1,36 +1,61 @@
+"""module for showstudy command"""
 import json
+from json import JSONDecodeError
 import os
-
 import sys
+
 
 import requests
 
 from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
-conf = None
+
+def load_token():
+    """function to load token from the auth config file"""
+    home_dir = os.getenv("HOME")
+
+    if not os.path.isfile(os.path.join(home_dir, ".advisor_auth")):
+        print("error: can't find api token, please run 'advsor-client auth' first")
+        sys.exit(0)
+    with open(os.path.join(home_dir, ".advisor_auth"), 'r') as auth_file:
+        token = json.loads(auth_file.read())["api_token"]
+
+    return token
 
 
 class Command(AdvisorCommand):
+    """Class for showstudy command
+    List all the studies available for a user
+    """
     def __init__(self):
         super().__init__()
         self.config_path = None
         self.file_name = None
 
     def run(self):
-        self._load_config()
-        token = self._load_token()
+        conf = self._load_config()
+        token = load_token()
         cookies = {
             'sessionid': token
         }
-        r = requests.get(
-            "http://{}:{}/api/study".format(conf["api_server"]["ip"], conf["api_server"]["port"]),
+        response = requests.get(
+            "http://{}:{}/api/study".format(
+                conf["api_server"]["ip"],
+                conf["api_server"]["port"]
+            ),
             cookies=cookies,
         )
-        if r.json()["code"] != 0:
-            print(r.json()["msg"])
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as error:
+            print(error)
             sys.exit(1)
 
-        elif len(r.json()["body"]) == 0:
+        if response.json()["code"] != 0:
+            print(response.json()["msg"])
+            sys.exit(1)
+
+        elif not response.json()["body"]:
             print("No study created")
             sys.exit(0)
 
@@ -43,11 +68,12 @@ class Command(AdvisorCommand):
                 "finished: ",
                 "paused: "
             ]
-            for study in r.json()["body"]:
+            for study in response.json()["body"]:
                 studies[study["status"]].append(dict(
                     id=study["study_id"],
                     name=study["name"],
                 ))
+
             for i in range(len(studies)):
                 print(messages[i])
                 for study in studies[i]:
@@ -59,8 +85,16 @@ class Command(AdvisorCommand):
 
     def add_options(self, parser):
         parser.add_argument("command")
-        parser.add_argument("-p", "--path", help="specify the path of the configuration file")
-        parser.add_argument("-f", "--file", help="specify the name of the config file", required=True)
+        parser.add_argument(
+            "-p",
+            "--path",
+            help="specify the path of the configuration file"
+        )
+        parser.add_argument(
+            "-f",
+            "--file",
+            help="specify the name of the config file", required=True
+        )
 
     def process_args(self, args):
         if args.path:
@@ -73,21 +107,10 @@ class Command(AdvisorCommand):
             sys.exit(1)
 
     def _load_config(self):
-        global conf
-        with open(os.path.join(self.config_path, self.file_name)) as f:
+        with open(os.path.join(self.config_path, self.file_name)) as config_file:
             try:
-                conf = json.loads(f.read())
-            except:
+                conf = json.loads(config_file.read())
+                return conf
+            except JSONDecodeError:
                 print("error: the config file is not in valid json format")
                 sys.exit(1)
-
-    def _load_token(self):
-        home_dir = os.getenv("HOME")
-
-        if not os.path.isfile(os.path.join(home_dir, ".advisor_auth")):
-            print("error: can't find api token, please run 'advsor-client auth' first")
-            sys.exit(0)
-        with open(os.path.join(home_dir, ".advisor_auth"), 'r') as f:
-            token = json.loads(f.read())["api_token"]
-
-        return token

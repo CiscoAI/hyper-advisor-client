@@ -13,7 +13,7 @@ from advisorclient import trail_pb2
 from advisorclient import trail_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
-conf = None
+CONF = None
 conf_abs_path = None
 debugging = False
 
@@ -39,7 +39,7 @@ def deprint(*args):
 
 
 def load_conf(file_path):
-    global conf, conf_abs_path
+    global CONF, conf_abs_path
     try:
         with open(file_path) as f:
             conf = json.loads(f.read())
@@ -61,7 +61,7 @@ class TrailServicer(trail_pb2_grpc.TrailServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     trail_pb2_grpc.add_TrailServicer_to_server(TrailServicer(), server)
-    server.add_insecure_port('%s:%s' % (conf['trail-server']['host'], conf['trail-server']['port']))
+    server.add_insecure_port('%s:%s' % (CONF['trail-server']['host'], CONF['trail-server']['port']))
     server.start()
     try:
         while True:

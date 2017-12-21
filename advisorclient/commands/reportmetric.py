@@ -1,16 +1,32 @@
+""" module for report metric command"""
 import json
+from json import JSONDecodeError
 import os
-
 import sys
 
 import requests
 
 from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
-conf = None
+
+def load_token():
+    """ to load token from the auth config file"""
+    home_dir = os.getenv("HOME")
+
+    if not os.path.isfile(os.path.join(home_dir, ".advisor_auth")):
+        print("error: can't find api token, please run 'advsor-client auth' first")
+        sys.exit(0)
+    with open(os.path.join(home_dir, ".advisor_auth"), 'r') as auth_file:
+        token = json.loads(auth_file.read())["api_token"]
+
+    return token
 
 
 class Command(AdvisorCommand):
+    """class for report metric command
+    to report the metric back to the api server
+    """
+
     def __init__(self):
         super().__init__()
         self.file_name = None
@@ -19,16 +35,17 @@ class Command(AdvisorCommand):
         self.config_path = None
 
     def run(self):
-        token = self._load_token()
-        self._load_config()
+        token = load_token()
+        conf = self._load_config()
 
         cookies = {"sessionid": token}
         metric = self._parse_metric()
-        r = requests.put(
-            url="http://{}:{}/api/trail/{}".format(conf["api_server"]["ip"],
-                                                   conf["api_server"]["port"],
-                                                   self.trail_id),
-
+        response = requests.put(
+            url="http://{}:{}/api/trail/{}".format(
+                conf["api_server"]["ip"],
+                conf["api_server"]["port"],
+                self.trail_id
+            ),
             json={
                 "metric": metric
             },
@@ -36,11 +53,12 @@ class Command(AdvisorCommand):
         )
 
         try:
-            r.json()
-            print(r.json()["msg"])
-        except:
-            print("error: internal server error")
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as error:
+            print(error)
             sys.exit(1)
+
+        print(response.json()["msg"])
 
     def _parse_metric(self):
         return dict({
@@ -52,10 +70,30 @@ class Command(AdvisorCommand):
 
     def add_options(self, parser):
         parser.add_argument("command")
-        parser.add_argument("-p", "--path", help="specify the path of the configuration file")
-        parser.add_argument("-f", "--file", required=True, help="specify the configuration file name")
-        parser.add_argument("-i", "--id", required=True, help="specify the trail id")
-        parser.add_argument("-m", "--metric", required=True, help="input the metric of the trail")
+        parser.add_argument(
+            "-p",
+            "--path",
+            help="specify the path of the configuration file"
+        )
+        parser.add_argument(
+            "-f",
+            "--file",
+            required=True,
+            help="specify the configuration file name"
+        )
+        parser.add_argument(
+            "-i",
+            "--id",
+            required=True,
+            help="specify the trail id"
+        )
+        parser.add_argument(
+            "-m",
+            "--metric",
+            required=True,
+            help="input the metric of the trail",
+            type=float
+        )
 
     def process_args(self, args):
         self.file_name = args.file
@@ -72,21 +110,10 @@ class Command(AdvisorCommand):
             sys.exit(1)
 
     def _load_config(self):
-        global conf
-        with open(os.path.join(self.config_path, self.file_name)) as f:
+        with open(os.path.join(self.config_path, self.file_name)) as config_file:
             try:
-                conf = json.loads(f.read())
-            except:
+                conf = json.loads(config_file.read())
+                return conf
+            except JSONDecodeError:
                 print("error: the config file is not in valid json format")
                 sys.exit(1)
-
-    def _load_token(self):
-        home_dir = os.getenv("HOME")
-
-        if not os.path.isfile(os.path.join(home_dir, ".advisor_auth")):
-            print("error: can't find api token, please run 'advsor-client auth' first")
-            sys.exit(0)
-        with open(os.path.join(home_dir, ".advisor_auth"), 'r') as f:
-            token = json.loads(f.read())["api_token"]
-
-        return token

@@ -1,3 +1,4 @@
+""" module for config command """
 import json
 
 import os
@@ -8,6 +9,9 @@ from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 
 class Command(AdvisorCommand):
+    """ class for config command
+    to make the configuration of api server and the info of model
+    """
     def __init__(self):
         super().__init__()
         self.out_path = None
@@ -25,14 +29,21 @@ class Command(AdvisorCommand):
         _conf['model']['project-root'] = input('Project root path : ')
         _conf['model']['entry'] = input('Entry point of model (executive python script, based on project path): ')
         conf_str = json.dumps(_conf)
-        with open(os.path.join(self.out_path, self.file_name), "w") as f:
-            f.write(conf_str)
+        with open(os.path.join(self.out_path, self.file_name), "w") as config_file:
+            config_file.write(conf_str)
         print('Done, saved to %s ...' % self.out_path)
 
     def add_options(self, parser):
         parser.add_argument("command")
-        parser.add_argument("-o", "--out", help="Specify output configuration file path")
-        parser.add_argument("-f", "--file", help="Specify the name of the output configuration file", required=True)
+        parser.add_argument(
+            "-o", "--out",
+            help="Specify output configuration file path"
+        )
+        parser.add_argument(
+            "-f", "--file",
+            help="Specify the name of the output configuration file",
+            required=True
+        )
 
     def show_desc(self):
         return "follow the interactive instruction to finish the configuration"
@@ -46,4 +57,3 @@ class Command(AdvisorCommand):
         else:
             self.out_path = os.getcwd()
         self.file_name = args.file
-
