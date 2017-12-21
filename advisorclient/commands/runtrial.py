@@ -1,4 +1,4 @@
-"""module for run trail command"""
+"""module for run trial command"""
 import json
 from json import JSONDecodeError
 import os
@@ -8,7 +8,7 @@ import time
 import requests
 
 
-from advisorclient import run_trail
+from advisorclient import run_trial
 from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 
@@ -26,8 +26,8 @@ def load_token():
 
 
 class Command(AdvisorCommand):
-    """class for run trail command
-    evaluate the trail automatically
+    """class for run trial command
+    evaluate the trial automatically
     """
     def __init__(self):
         super().__init__()
@@ -44,7 +44,7 @@ class Command(AdvisorCommand):
         for i in range(self.iteration_num):
             while True:
                 response = requests.get(
-                    url="http://{}:{}/api/study/{}/trail".format(
+                    url="http://{}:{}/api/study/{}/trial".format(
                         conf["api_server"]["ip"],
                         conf["api_server"]["port"],
                         self.study_id
@@ -60,8 +60,8 @@ class Command(AdvisorCommand):
                 if response.json()["code"] != 0:
                     print(response.json()["msg"])
                     sys.exit(1)
-                elif not response.json()["body"]['trail_list']:
-                    print("no trail need to be evaluated now, trying again ...")
+                elif not response.json()["body"]['trial_list']:
+                    print("no trial need to be evaluated now, trying again ...")
                     print("Please check whether the study is started")
                     time.sleep(5)
 
@@ -69,18 +69,18 @@ class Command(AdvisorCommand):
                     iteration = response.json()["body"]["iteration"]
                     break
 
-            for j in range(len(response.json()["body"]["trail_list"])):
-                trail_id, metric = run_trail.run(
+            for j in range(len(response.json()["body"]["trial_list"])):
+                trial_id, metric = run_trial.run(
                     conf_path=os.path.join(self.config_path, self.file_name),
-                    trail_id=response.json()["body"]["trail_list"][j]["trail_id"],
-                    trail=str(response.json()["body"]["trail_list"][j]["trail"]),
+                    trial_id=response.json()["body"]["trial_list"][j]["trial_id"],
+                    trial=str(response.json()["body"]["trial_list"][j]["trial"]),
                 )
 
                 report_response = requests.put(
-                    url="http://{}:{}/api/trail/{}".format(
+                    url="http://{}:{}/api/trial/{}".format(
                         conf["api_server"]["ip"],
                         conf["api_server"]["port"],
-                        trail_id
+                        trial_id
                     ),
                     json={
                         "metric": metric

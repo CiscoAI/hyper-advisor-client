@@ -30,7 +30,7 @@ class Command(AdvisorCommand):
     def __init__(self):
         super().__init__()
         self.file_name = None
-        self.trail_id = None
+        self.trial_id = None
         self.metric = None
         self.config_path = None
 
@@ -41,10 +41,10 @@ class Command(AdvisorCommand):
         cookies = {"sessionid": token}
         metric = self._parse_metric()
         response = requests.put(
-            url="http://{}:{}/api/trail/{}".format(
+            url="http://{}:{}/api/trial/{}".format(
                 conf["api_server"]["ip"],
                 conf["api_server"]["port"],
-                self.trail_id
+                self.trial_id
             ),
             json={
                 "metric": metric
@@ -66,7 +66,7 @@ class Command(AdvisorCommand):
         })
 
     def show_desc(self):
-        return "report the metric of the trail to the system"
+        return "report the metric of the trial to the system"
 
     def add_options(self, parser):
         parser.add_argument("command")
@@ -85,19 +85,19 @@ class Command(AdvisorCommand):
             "-i",
             "--id",
             required=True,
-            help="specify the trail id"
+            help="specify the trial id"
         )
         parser.add_argument(
             "-m",
             "--metric",
             required=True,
-            help="input the metric of the trail",
+            help="input the metric of the trial",
             type=float
         )
 
     def process_args(self, args):
         self.file_name = args.file
-        self.trail_id = args.id
+        self.trial_id = args.id
         self.metric = args.metric
 
         if args.path:

@@ -24,18 +24,18 @@ def load_token():
     return token
 
 
-def print_trail(trail):
-    """ to print the trail """
+def print_trial(trial):
+    """ to print the trial """
 
-    trail = json.loads(trail)
-    for param in trail:
+    trial = json.loads(trial)
+    for param in trial:
         print("%-15s: " % param['name'], end="")
         print(param['value'])
 
 
 class Command(AdvisorCommand):
     """ class for get suggestion command
-    to get trail (suggestion) from the api server
+    to get trial (suggestion) from the api server
     """
     def __init__(self):
         super().__init__()
@@ -48,7 +48,7 @@ class Command(AdvisorCommand):
         cookies = {"sessionid": token}
         conf = self._load_config()
         response = requests.get(
-            url="http://{}:{}/api/study/{}/trail".format(
+            url="http://{}:{}/api/study/{}/trial".format(
                 conf["api_server"]["ip"],
                 conf["api_server"]["port"],
                 self.study_id
@@ -66,15 +66,15 @@ class Command(AdvisorCommand):
             print(response.json()["msg"])
             sys.exit(1)
 
-        if not response.json()["body"]["trail_list"]:
-            print("no trail need to be evaluated now")
+        if not response.json()["body"]["trial_list"]:
+            print("no trial need to be evaluated now")
             print("please check whether the study is started and try again")
             sys.exit(0)
 
-        trail_list = response.json()["body"]["trail_list"]
-        for j in range(len(trail_list)):
-            print("trail id: %d" % trail_list[j]["trail_id"])
-            print_trail(trail_list[j]["trail"])
+        trial_list = response.json()["body"]["trial_list"]
+        for j in range(len(trial_list)):
+            print("trial id: %d" % trial_list[j]["trial_id"])
+            print_trial(trial_list[j]["trial"])
             print()
 
     def show_desc(self):

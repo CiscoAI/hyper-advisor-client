@@ -17,7 +17,8 @@ advisor-client <command> [flag] [args]
 
 - auth
 
-Give the token and store it locally. This should be done first if you have not logged in
+Give the token and store it locally. This should be done first if you have not logged in.
+To get the token, please login through the website first.
 
 |Option Flag|Arguments|Description|Required|
 |-----------|---------|-----------|--------|
@@ -66,7 +67,7 @@ Report the metric (objective value) back to the api server
 |Option Flag|Arguments|Description|Required|
 |-----------|---------|-----------|--------|
 |-h, --help|| desplay help messages|No|
-|-i, --ID|TRAIL_ID|specify the trail id|Yes|
+|-i, --id|TRAIL_ID|specify the trail id|Yes|
 |-f, --file|FILE_NAME|Specify the name of the configuration file|Yes|
 |-m, --metric|METRIC|input the metric of the trail|Yes|
 |-p, --path|PATH|specify the path of the configuration file|No|
@@ -78,7 +79,7 @@ Report the metric (objective value) back to the api server
 |Option Flag|Arguments|Description|Required|
 |-----------|---------|-----------|--------|
 |-h, --help|| desplay help messages|No|
-|-i, --ID|STUDY_ID|specify the study id|Yes|
+|-i, --id|STUDY_ID|specify the study id|Yes|
 |-f, --file|FILE_NAME|Specify the name of the configuration file|Yes|
 |-n, --number|NUMBER|specify the number of iteration needed|Yes|
 |-p, --path|PATH|specify the path of the configuration file|No|

@@ -1,3 +1,4 @@
+""" main module to control all the commands"""
 import argparse
 import importlib
 import inspect
@@ -9,8 +10,9 @@ import sys
 from advisorclient.commands.AdvisorCommand import AdvisorCommand
 
 
-# find all the modules recursively under a path
 def walk_modules(path):
+    """ function to find all the modules recursively under a path """
+
     mods = []
     mod = importlib.import_module(path)
     mods.append(mod)
@@ -25,8 +27,9 @@ def walk_modules(path):
     return mods
 
 
-# the generator to fetch all the subclass of the AdvisorCommand class
 def iter_command_classes(module_name):
+    """ the generator to fetch all the subclass of the AdvisorCommand class """
+
     mods = walk_modules(module_name)
     for mod in mods:
         for obj in vars(mod).values():
@@ -37,22 +40,28 @@ def iter_command_classes(module_name):
                 yield obj
 
 
-# create a dictionary for commands
 def get_commands_from_module(mod):
-    d = {}
+    """ create a dictionary for commands """
+
+    cmd_dict = {}
     for cmd in iter_command_classes(mod):
         cmdname = cmd.__module__.split('.')[-1]
-        d[cmdname] = cmd()
-    return d
+        cmd_dict[cmdname] = cmd()
+    return cmd_dict
 
 
 def get_command_from_argument(argv):
+    """ extract command from the command line arguments """
+
     for arg in argv[1:]:
         if not arg.startswith('-'):
             return arg
+    return None
 
 
 def print_usage():
+    """ print usage of this cli tool """
+
     print("Usage:")
     print("advisor-client <command> [options] [args]")
     print("Available commands:")
@@ -64,11 +73,15 @@ def print_usage():
 
 
 def print_unknown_command(cmdname):
+    """ print the error of unknown commands"""
+
     print("Unknown command: %s" % cmdname)
     print("Use 'advisor-client' to see available commands")
 
 
 def execute(argv=None):
+    """ main entry of this module"""
+
     if argv is None:
         argv = sys.argv
 
