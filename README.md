@@ -15,7 +15,7 @@ advisor-client <command> [flag] [args]
 
 ### Available Commands:
 
-- auth
+- authtrial
 
 Give the token and store it locally. This should be done first if you have not logged in.
 To get the token, please login through the website first.
@@ -39,7 +39,7 @@ Note: the sample random forest model is included in this repository, which you c
 
 - getsuggestion
 
-Get the trail from the server
+Get the trial from the server
 
 |Option Flag|Arguments|Description|Required|
 |-----------|---------|-----------|--------|
@@ -67,12 +67,12 @@ Report the metric (objective value) back to the api server
 |Option Flag|Arguments|Description|Required|
 |-----------|---------|-----------|--------|
 |-h, --help|| desplay help messages|No|
-|-i, --id|TRAIL_ID|specify the trail id|Yes|
+|-i, --id|TRIAL_ID|specify the trial id|Yes|
 |-f, --file|FILE_NAME|Specify the name of the configuration file|Yes|
-|-m, --metric|METRIC|input the metric of the trail|Yes|
+|-m, --metric|METRIC|input the metric of the trial|Yes|
 |-p, --path|PATH|specify the path of the configuration file|No|
 
-- runtrail
+- runtrial
 
 
 

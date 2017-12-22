@@ -57,7 +57,12 @@ class Command(AdvisorCommand):
                     print(error)
                     exit(1)
 
-                if response.json()["code"] != 0:
+                print(response.json()["code"])
+                if response.json()["code"] == 2018:
+                    print(response.json()["msg"])
+                    time.sleep(5)
+                    continue
+                elif response.json()["code"] != 0:
                     print(response.json()["msg"])
                     sys.exit(1)
                 elif not response.json()["body"]['trial_list']:
