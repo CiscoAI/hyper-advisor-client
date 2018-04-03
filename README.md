@@ -1,2 +1,2 @@
-# adviser-client
-auto tuning adviser client
+# advisor-client
+auto tuning advisor client
