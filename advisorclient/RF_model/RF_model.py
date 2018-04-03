@@ -1,3 +1,4 @@
+""" module for the sample random forest model """
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
@@ -8,15 +9,33 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 def data_preprocess():
-    train_data = pd.read_csv("RF_model/train.csv")
-    test_data = pd.read_csv("RF_model/test.csv")
+    """ function for data pre-processing"""
 
-    train_data.insert(loc=0, column="CabinNull", value=np.array(train_data.isnull()["Cabin"], dtype=int))
-    train_data.insert(loc=0, column="AgeNull", value=np.array(train_data.isnull()["Age"], dtype=int))
+    train_data = pd.read_csv("train.csv")
+    test_data = pd.read_csv("test.csv")
 
-    train_data.insert(loc=0, column="FamilyName", value=train_data["Name"].str.split(pat=",", expand=True)[0])
+    train_data.insert(
+        loc=0,
+        column="CabinNull",
+        value=np.array(train_data.isnull()["Cabin"], dtype=int)
+    )
+    train_data.insert(
+        loc=0,
+        column="AgeNull",
+        value=np.array(train_data.isnull()["Age"], dtype=int)
+    )
+
+    train_data.insert(
+        loc=0,
+        column="FamilyName",
+        value=train_data["Name"].str.split(pat=",", expand=True)[0]
+    )
     train_data["Name"] = train_data["Name"].str.split(pat=",", expand=True)[1]
-    train_data.insert(loc=0, column="Title", value=train_data["Name"].str.split(pat=".", expand=True)[0])
+    train_data.insert(
+        loc=0,
+        column="Title",
+        value=train_data["Name"].str.split(pat=".", expand=True)[0]
+    )
     train_data["Name"] = train_data["Name"].str.split(pat=".", expand=True)[1]
 
     family_size = train_data.groupby("FamilyName", as_index=False).agg({"PassengerId": np.size})
@@ -133,9 +152,8 @@ def data_preprocess():
 
 
 def model(n_estimator, criterion, max_features, max_depth):
-    # Xtrain, Xtest, ytrain, ytest = train_test_split(X_train, y_train, test_size=0.3)
-    # print(Xtrain.shape)
-    # print(ytrain.shape)
+    """ train and get the score of the random forest model """
+
     rf = RandomForestClassifier(
         # integer 100
         n_estimators=int(n_estimator),
@@ -154,6 +172,8 @@ def model(n_estimator, criterion, max_features, max_depth):
 
 
 def usage():
+    """ print the usage """
+
     print('RF_model.py usage')
     print('-h, --help:          Print help message')
     print('-n, --n_estimators:  The number of trees in the forest')
@@ -163,9 +183,7 @@ def usage():
 
 
 def get_metric():
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("trail", nargs="+", type=str)
-    # args = parser.parse_args()
+    """ main entry of this module """
 
     import getopt
     import sys

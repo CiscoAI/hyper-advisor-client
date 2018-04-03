@@ -1,18 +1,18 @@
 from distutils.core import setup
 
+from setuptools import find_packages
+
 setup(
-    name='advisor-client',
+    name='advisorclient',
     version='0.0.1',
     author='Adel Liu',
     author_email='i@6-79.cn',
     description='auto tuning adviser client',
     url='https://github.com/ciscoai/adviser-client',
-    license='MIT',
-    packages=['advisorclient'],
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'trail_server=advisorclient.trail_server:execute',
-            'trail_exec=advisorclient.run_trail:run',
+            'advisor-client=advisorclient.cmdline:execute',
         ]
     },
     install_requires=[
